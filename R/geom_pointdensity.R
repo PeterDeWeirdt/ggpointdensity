@@ -13,6 +13,61 @@ count_neighbors_r <- function(x, y, r2, xy) {
   })
 }
 
+# From Kamil Slowikowski: https://slowkow.com/notes/ggplot2-color-by-density/
+# Get density of points in 2 dimensions.
+# @param x A numeric vector.
+# @param y A numeric vector.
+# @param n Create a square n by n grid to compute density.
+# @return The density within each square.
+get_density <- function(x, y, ...) {
+  dens <- MASS::kde2d(x, y, ...)
+  ix <- findInterval(x, dens$x)
+  iy <- findInterval(y, dens$y)
+  ii <- cbind(ix, iy)
+  return(dens$z[ii])
+}
+
+StatPointkde <- ggproto("StatPointkde", Stat,
+                        default_aes = aes(color = stat(density)),
+                        required_aes = c("x", "y"),
+
+                        compute_group = function(data, scales, adjust = 1) {
+                          adjust <- ggplot2:::dual_param(adjust, list(x = 1, y = 1))
+
+                          # get kde around each point.
+                          # Increase n for higher resolution
+                          data$density <- get_density(
+                            data$x, data$y, n = 300)
+
+                          data
+                        }
+)
+
+stat_pointkde <- function(mapping = NULL,
+                          data = NULL,
+                          geom = "point",
+                          position = "identity",
+                          ...,
+                          adjust = 1,
+                          na.rm = FALSE,
+                          show.legend = NA,
+                          inherit.aes = TRUE) {
+  layer(
+    data = data,
+    mapping = mapping,
+    stat = StatPointkde,
+    geom = geom,
+    position = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
+    params = list(
+      adjust = 1,
+      na.rm = na.rm,
+      ...
+    )
+  )
+}
+
 stat_pointdensity <- function(mapping = NULL,
                               data = NULL,
                               geom = "point",

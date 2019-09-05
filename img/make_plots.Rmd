@@ -8,15 +8,16 @@ editor_options:
 ---
 
 ```{r}
-# devtools::install_github("LKremer/ggpointdensity")
+devtools::install_github("peterdeweirdt/ggpointdensity")
 ```
 
 
 ```{r}
 library(tidyverse)
 library(viridis)
-library(ggpointdensity)
+#library(ggpointdensity)
 library(patchwork)
+library(here)
 theme_set(theme_minimal())
 ```
 
@@ -55,7 +56,7 @@ pb <- dat %>%
 
 pp + pd + pb
 
-ggsave("/home/lukas/code/ggpointdensity/img/scatter_dens_bin2d.png",
+ggsave(here("img/scatter_dens_bin2d.png"),
        width = 22, height = 6, units = "cm", dpi = 300)
 ```
 
@@ -68,9 +69,23 @@ dat %>%
   scale_color_viridis() +
   labs(title="geom_pointdensity()") + theme(plot.title = element_text(hjust = 0.5))
 
-ggsave("/home/lukas/code/ggpointdensity/img/pointdensity.png",
+ggsave(here("/img/pointdensity.png"),
        width = 10, height = 7, units = "cm", dpi = 300)
 ```
+
+Alter the stat to kde:
+```{r}
+dat %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_pointdensity(size = .3, stat = 'pointkde') +
+  scale_color_viridis() +
+  labs(title="geom_pointdensity(stat = )") + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggsave(here("/img/pointdensity.png"),
+       width = 10, height = 7, units = "cm", dpi = 300)
+```
+
 
 ```{r}
 dat %>%
@@ -82,7 +97,7 @@ dat %>%
   theme(plot.title = element_text(hjust = 0.5),
         legend.position = "none")
 
-ggsave("/home/lukas/code/ggpointdensity/img/pointdensity_logo.png",
+ggsave(here("/img/pointdensity_logo.png"),
        width = 7, height = 8, units = "cm", dpi = 300)
 ```
 
@@ -103,7 +118,7 @@ adj2 <- dat %>%
 
 
 adj1 + adj2
-ggsave("/home/lukas/code/ggpointdensity/img/pointdensity_adj.png",
+ggsave(here("/img/pointdensity_adj.png"),
        width = 18, height = 6, units = "cm", dpi = 300)
 ```
 
@@ -115,7 +130,7 @@ dat %>%
   scale_color_viridis() +
   labs(title="adjust = c(0.1, 2)") + theme(plot.title = element_text(hjust = 0.5))
 
-ggsave("/home/lukas/code/ggpointdensity/img/pointdensity_xyadj.png",
+ggsave(here("/img/pointdensity_xyadj.png"),
        width = 10, height = 7, units = "cm", dpi = 300)
 ```
 
@@ -128,7 +143,7 @@ dat %>%
   facet_wrap( ~ group) +
   labs(title="facet_wrap( ~ group)") + theme(plot.title = element_text(hjust = 0.5))
 
-ggsave("/home/lukas/code/ggpointdensity/img/pointdensity_facet.png",
+ggsave(here("/img/pointdensity_facet.png"),
        width = 14, height = 7, units = "cm", dpi = 300)
 ```
 
@@ -155,7 +170,7 @@ pcc <- dat %>%
 
 ```{r}
 plim + pcc
-ggsave("/home/lukas/code/ggpointdensity/img/pointdensity_zoom.png",
+ggsave(here("/img/pointdensity_zoom.png"),
        width = 18, height = 6, units = "cm", dpi = 300)
 ```
 
@@ -168,7 +183,7 @@ dat %>% sample_frac(.1) %>%
   scale_color_viridis() +
   labs(title="changing shape") + theme(plot.title = element_text(hjust = 0.5))
 
-ggsave("/home/lukas/code/ggpointdensity/img/pointdensity_shape.png",
+ggsave(here("/img/pointdensity_shape.png"),
        width = 10, height = 7, units = "cm", dpi = 300)
 ```
 
@@ -181,7 +196,7 @@ dat %>%
   scale_color_viridis(option = "inferno", end = .9, direction = -1) +
   scale_size_continuous(range = c(.001, 3))
 
-ggsave("/home/lukas/code/ggpointdensity/img/pointdensity_custom.png",
+ggsave(here("/img/pointdensity_custom.png"),
        width = 14, height = 10, units = "cm", dpi = 300)
 ```
 
